@@ -1,0 +1,56 @@
+name: Generate Countdown RSS
+
+on:
+  schedule:
+    # 毎日 00:05 UTC = 09:05 JST に実行
+    - cron: "5 0 * * *"
+  workflow_dispatch: # 手動実行も可能
+
+# GitHub Pages デプロイ用の権限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # ===== ここを編集 =====
+      TARGET_DATE: "2026-11-15"
+      EVENT_NAME: "統計検定1級"
+      FEED_TITLE: "Countdown RSS"
+      TZ_OFFSET_HOURS: "9"
+      # ======================
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Generate RSS feed
+        run: |
+          export SITE_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          python generate_feed.py
+          cat public/feed.xml
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
