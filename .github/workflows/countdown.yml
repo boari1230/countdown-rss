@@ -2,11 +2,9 @@ name: Generate Countdown RSS
 
 on:
   schedule:
-    # 毎日 00:05 UTC = 09:05 JST に実行
     - cron: "5 0 * * *"
-  workflow_dispatch: # 手動実行も可能
+  workflow_dispatch:
 
-# GitHub Pages デプロイ用の権限
 permissions:
   contents: read
   pages: write
@@ -20,16 +18,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # ===== ここを編集 =====
-      EVENTS: >-
-        [
-          {"date": "2026-11-15", "name": "統計検定1級"},
-          {"date": "2026-08-30", "name": "E資格(E2026#2)"},
-          # {"date": "2026-12-31", "name": ""}
-        ]
       FEED_TITLE: "Countdown RSS"
       TZ_OFFSET_HOURS: "9"
-      # ======================
     steps:
       - uses: actions/checkout@v4
 
