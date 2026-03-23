@@ -21,8 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # ===== ここを編集 =====
-      TARGET_DATE: "2026-11-15"
-      EVENT_NAME: "統計検定1級"
+      EVENTS: >-
+        [
+          {"date": "2026-06-30", "name": "v1.0 リリース"},
+          {"date": "2026-09-01", "name": "新学期"},
+          {"date": "2026-12-31", "name": "年末"}
+        ]
       FEED_TITLE: "Countdown RSS"
       TZ_OFFSET_HOURS: "9"
       # ======================
